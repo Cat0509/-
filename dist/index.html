@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>生日快乐 · 专属惊喜</title>
+    <meta name="description" content="一份有剧情、有互动、有仪式感的生日网页。" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <!-- Loader -->
+    <div id="loader" class="screen">
+        <canvas id="loader-canvas"></canvas>
+        <div id="loader-content" class="glass">
+            <p id="loader-title">正在打包你的生日惊喜</p>
+            <div id="loader-bar-wrap">
+                <div id="loader-bar"></div>
+            </div>
+            <p id="loader-percent">0%</p>
+        </div>
+    </div>
+
+    <header id="topbar">
+        <div class="brand">Birthday Story</div>
+        <button id="audio-toggle" class="ghost-btn" aria-label="切换背景音乐">音乐：关</button>
+    </header>
+
+    <!-- Act 1: Unlock (Proj 1) -->
+    <section id="act1" class="act hidden">
+        <canvas id="act1-canvas"></canvas>
+        <div id="act1-ui">
+            <p class="kicker">Chapter 01</p>
+            <h1 id="act1-title">今晚有一份专属礼物</h1>
+            <p id="act1-hint">向右满滑，解锁惊喜</p>
+
+            <div id="act1-slider-wrap" class="glass">
+                <div id="act1-track">
+                    <span id="act1-track-text">向右滑动解锁</span>
+                    <div id="act1-thumb" aria-label="解锁">🎁</div>
+                </div>
+            </div>
+
+            <div id="password-panel" class="hidden">
+                <p class="panel-title">输入暗号</p>
+                <div id="pw-inputs">
+                    <input class="pw-char" maxlength="1" />
+                    <input class="pw-char" maxlength="1" />
+                    <input class="pw-char" maxlength="1" />
+                    <input class="pw-char" maxlength="1" />
+                </div>
+                <p id="pw-hint"></p>
+                <p id="pw-error" class="error hidden">暗号不对，再想想。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Act 2: Timeline (Proj 2) -->
+    <section id="act2" class="act hidden">
+        <div class="act-inner wide">
+            <p class="kicker">Chapter 02</p>
+            <h2>被认真记住的日子</h2>
+            <p class="sub">点开每个节点，拆开你的回忆盲盒</p>
+            <div id="memory-timeline"></div>
+            <div class="center">
+                <button id="to-act3" class="gold-btn">继续探索</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Act 3: Game (Proj 2) -->
+    <section id="act3" class="act hidden">
+        <canvas id="act3-canvas"></canvas>
+        <div class="act-inner">
+            <p class="kicker">Chapter 03</p>
+            <h2>接住今天的甜蜜</h2>
+            <p class="sub">20 秒小游戏：移动托盘接住掉落礼物</p>
+            <div class="hud glass">
+                <span>分数：<b id="score">0</b></span>
+                <span>时间：<b id="timer">20</b>s</span>
+                <span>目标：<b id="target">20</b></span>
+            </div>
+            <div id="game-area" class="glass">
+                <div id="basket">🧺</div>
+            </div>
+            <div class="center game-actions">
+                <button id="start-game" class="gold-btn">开始挑战</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Act 4: Cake Reveal (Proj 1 Act 2) -->
+    <section id="act4" class="act hidden">
+        <canvas id="act4-canvas"></canvas>
+        <div id="act4-ui">
+            <p class="kicker">Chapter 04</p>
+            <h2 id="act4-banner">✨ IT'S YOUR DAY ✨</h2>
+            <div id="cake-stage"></div>
+            <p id="act4-subtitle">闭上眼，准备迎接惊喜…</p>
+            <button id="act4-next-btn" class="gold-btn hidden" style="margin-top: 20px;">许个愿吧</button>
+        </div>
+    </section>
+
+    <!-- Act 5: Blow & Wish (Proj 1 Act 3) -->
+    <section id="act5" class="act hidden">
+        <canvas id="act5-canvas"></canvas>
+        <div id="act5-ui">
+            <p class="kicker">Chapter 05</p>
+            <h2 id="act5-label"
+                style="font-family: var(--font-serif); font-size: clamp(1.4rem, 4vw, 2.2rem); letter-spacing: .2em; color: var(--c-gold); text-shadow: 0 0 20px rgba(240, 192, 96, .5); animation: pulse 3s infinite;">
+                点燃今日份的美好</h2>
+            <div id="full-cake-wrap"></div>
+            <div id="mic-btn-wrap">
+                <button id="mic-btn" class="gold-btn">🎤 点击吹灭蜡烛</button>
+                <p id="mic-hint"
+                    style="margin-top: 10px; font-size: 0.85rem; letter-spacing: .1em; color: rgba(255, 255, 255, .5);">
+                    （如有麦克风权限，吹气即可灭蜡烛）</p>
+                <div id="blow-meter-wrap"
+                    style="width: min(280px, 60vw); height: 8px; background: rgba(255, 255, 255, .1); border-radius: 99px; overflow: hidden; display: none; margin-top: 10px;">
+                    <div id="blow-meter"
+                        style="height: 100%; width: 0%; background: linear-gradient(90deg, #60a5fa, #2dd4bf); transition: width .05s linear;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="wish-panel" class="hidden">
+            <h1 id="birthday-name"></h1>
+            <div id="wish-input-wrap">
+                <p id="wish-prompt">写下你今年的愿望，点击封装进宇宙</p>
+                <textarea id="wish-input" placeholder="我的愿望是..."></textarea>
+                <button id="wish-submit-btn" class="gold-btn" style="margin-top: 20px;">封存愿望 🌟</button>
+            </div>
+            <div id="wish-sealed" class="hidden">
+                <div id="wish-sealed-text"></div>
+                <button id="to-act6-btn" class="gold-btn" style="margin-top: 20px;">看看大家怎么说 →</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Act 6: Blessing Wall (Proj 1 Act 4) -->
+    <section id="act6" class="act hidden">
+        <canvas id="act6-canvas"></canvas>
+        <div id="act6-ui">
+            <p class="kicker">Chapter 06</p>
+            <h2 id="act6-title">专属祝福墙</h2>
+            <p id="act6-subtitle">每一句都是写给你的光</p>
+            <div id="blessing-wall"></div>
+
+            <div id="unlock-final" class="glass"
+                style="margin-top: 40px; padding: 20px; border-radius: 16px; text-align: center;">
+                <p>输入最终关键词，解锁一封写给你的信</p>
+                <div class="unlock-row" style="display:flex; gap:10px; margin-top:10px; justify-content:center;">
+                    <input id="final-keyword" placeholder="输入关键词"
+                        style="padding:10px; border-radius:8px; border:none; outline:none; font-family:var(--font-sans);" />
+                    <button id="open-letter" class="gold-btn">解锁信件</button>
+                </div>
+                <p id="final-hint" style="font-size:0.8rem; margin-top:10px; opacity:0.6;"></p>
+                <p id="final-error" class="hidden" style="color:#ff6eb4; font-size:0.85rem; margin-top:5px;">关键词不对哦</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Letter Modal -->
+    <div id="letter-modal" class="hidden">
+        <div class="letter-card">
+            <button id="close-letter" class="close-btn">×</button>
+            <h3>To <span id="letter-name"></span></h3>
+            <p id="letter-content"></p>
+            <p class="sign">生日快乐。</p>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="config.js"></script>
+    <script src="audio.js"></script>
+    <script src="loader.js"></script>
+    <script src="act1.js"></script>
+    <script src="act2.js"></script>
+    <script src="act3.js"></script>
+    <script src="act4.js"></script>
+    <script src="act5.js"></script>
+    <script src="act6.js"></script>
+    <script src="main.js"></script>
+</body>
+
+</html>
